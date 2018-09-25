@@ -2,7 +2,7 @@
 /**
  * Plugin Name: WooCommerce Installment Purchase
  * Plugin URI: https://github.com/Longkt/wc-installment-purchase
- * Description: A button show the referent to monthly installments.
+ * Description: A button show the referent to monthly payment.
  * Version: 1.0.0
  * Author: Long Nguyen
  * Author URI: https://profiles.wordpress.org/longnguyen
