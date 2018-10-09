@@ -4,38 +4,46 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-add_action( 'wp_ajax_process_form', 'process_form' );
-add_action( 'wp_ajax_nopriv_process_form', 'process_form' );
+add_action( 'wp_ajax_process_form', 'wip_process_form' );
+add_action( 'wp_ajax_nopriv_process_form', 'wip_process_form' );
 
-function process_form() {
+function wip_process_form() {
 	$money = $rate = $deadline = $deadline_type = $type = "";
 
-	if (isset($_POST['money'])) {
-		$money = $_POST['money'];
-		$money = (int)str_replace(',', '', $money);
+	// Clean up the input values
+	foreach( $_POST as $key => $value ) {
+		if( ini_get( 'magic_quotes_gpc' ) )
+			$_POST[$key] = stripslashes( $_POST[$key] );
+		
+		$_POST[$key] = htmlspecialchars( strip_tags( $_POST[$key] ) );
 	}
 
-	if (isset($_POST['rate'])) {
+	if ( isset( $_POST['money'] ) ) {
+		$money = $_POST['money'];
+		$money = (int)str_replace( ',', '', $money );
+	}
+
+	if ( isset( $_POST['rate'] ) ) {
 		$rate = $_POST['rate'];
 	}
 
-	if (isset($_POST['deadline'])) {
+	if ( isset( $_POST['deadline'] ) ) {
 		$deadline = $_POST['deadline'];
 	}
 
-	if (isset($_POST['deadline-type'])) {
+	if ( isset( $_POST['deadline-type'] ) ) {
 		$deadline_type = $_POST['deadline-type'];
 	}
 
-	if (isset($_POST['type'])) {
+	if ( isset( $_POST['type'] ) ) {
 		$type = $_POST['type'];
 	}
 				  	
-  	if ($deadline_type == 'year') {
+  	if ( $deadline_type == 'year' ) {
   		$deadline = $deadline * 12;
   	}
 
-  	if (!is_numeric($money) || !is_numeric($rate) || !is_numeric($deadline) ) {
+  	if ( !is_numeric( $money ) || !is_numeric( $rate ) || !is_numeric( $deadline ) ) {
 
   		echo '<p class="text-center">' . __( 'Check the input value!', 'wip' ) . '</p>';
 
@@ -57,7 +65,7 @@ function process_form() {
 				<tbody>
 					<tr>
 					  	<td></td>
-					  	<td><?php echo number_format( $money ); ?></td>
+					  	<td><?php echo esc_html( number_format( $money ) ) ?></td>
 					  	<td></td>
 					  	<td></td>
 					  	<td></td>
@@ -65,12 +73,12 @@ function process_form() {
 					
 		<?php 
 	  	
-	  	switch ($type) {
+	  	switch ( $type ) {
 	  		case '1':
 	  			
-	  			for ($i = 1; $i <= $deadline; $i++) {
+	  			for ( $i = 1; $i <= $deadline; $i++ ) {
 
-			  		$interest_per_month = $money * ($rate / 100) / 12;
+			  		$interest_per_month = $money * ( $rate / 100 ) / 12;
 			  		$total_interest += $interest_per_month;
 			  		
 			  		$money = $money - $base_per_month;
@@ -78,44 +86,44 @@ function process_form() {
 			  		$pay_per_month = $base_per_month + $interest_per_month;
 			  		echo '<tr>
 			  				<th scope="row">' . __( 'Month ', 'wip' ) . $i . '</th>
-			  				<td>' . number_format( $money ) . '</td>
-						    <td>' . number_format( $base_per_month ) . '</td> 
-						    <td>' . number_format( $interest_per_month ) . '</td>
-						    <td>' . number_format( $pay_per_month ) . '</td>
+			  				<td>' . esc_html( number_format( $money ) ) . '</td>
+						    <td>' . esc_html( number_format( $base_per_month ) ) . '</td> 
+						    <td>' . esc_html( number_format( $interest_per_month ) ) . '</td>
+						    <td>' . esc_html( number_format( $pay_per_month ) ) . '</td>
 						  </tr>';
 			  	}
 	  			break;				  		
 	  		case '2':
-	  			$total_interest = ($money * pow(1 + (($rate / 100) / 12) , $deadline) - $money);
+	  			$total_interest = ( $money * pow( 1 + ( ( $rate / 100 ) / 12 ) , $deadline ) - $money );
 	  			$interest_per_month = $total_interest / $deadline;	
-	  			for ($i = 1; $i <= $deadline; $i++) {
+	  			for ( $i = 1; $i <= $deadline; $i++ ) {
 			  				  		
 			  		$money = $money - $base_per_month;
 			  		
 			  		$pay_per_month = $base_per_month + $interest_per_month;
 			  		echo '<tr>
 			  				<th scope="row">' . __( 'Month ', 'wip' ) . $i . '</th>
-						    <td>' . number_format( $money ) . '</td>
-						    <td>' . number_format( $base_per_month ) . '</td> 
-						    <td>' . number_format( $interest_per_month ) . '</td>
-						    <td>' . number_format( $pay_per_month ) . '</td>
+						    <td>' . esc_html( number_format( $money ) ) . '</td>
+						    <td>' . esc_html( number_format( $base_per_month ) ) . '</td> 
+						    <td>' . esc_html( number_format( $interest_per_month ) ) . '</td>
+						    <td>' . esc_html( number_format( $pay_per_month ) ) . '</td>
 						  </tr>';
 			  	}
 	  			break;
 
 	  		case '3':
-	  			$total_interest = $money * ($rate / 100) / 12 * $deadline;
+	  			$total_interest = $money * ( $rate / 100 ) / 12 * $deadline;
 	  			$interest_per_month = $total_interest / $deadline;	
-		  		for ($i = 1; $i <= $deadline; $i++) { 		
+		  		for ( $i = 1; $i <= $deadline; $i++ ) { 		
 			  		$money = $money - $base_per_month;
 			  		
 			  		$pay_per_month = $base_per_month + $interest_per_month;
 			  		echo '<tr>
 			  				<th scope="row">' . __( 'Month ', 'wip' ) . $i . '</th>
-						    <td>' . number_format( $money ) . '</td>
-						    <td>' . number_format( $base_per_month ) . '</td> 
-						    <td>' . number_format( $interest_per_month ) . '</td>
-						    <td>' . number_format( $pay_per_month ) . '</td>
+						    <td>' . esc_html( number_format( $money ) ) . '</td>
+						    <td>' . esc_html( number_format( $base_per_month ) ) . '</td> 
+						    <td>' . esc_html( number_format( $interest_per_month ) ) . '</td>
+						    <td>' . esc_html( number_format( $pay_per_month ) ) . '</td>
 						  </tr>';
 			  	}
 	  			break;
@@ -125,16 +133,16 @@ function process_form() {
 			</table>
 			<div class="total">
   				<div class="col-md-4">
-  					<p><?php _e( 'Total Amount (Original and Interest)', 'wip') ?></p>
-  					<p><?php echo number_format($before_money + $total_interest); ?></p>
+  					<p><?php _e( 'Total Amount', 'wip') ?></p>
+  					<p><?php echo esc_html( number_format( $before_money + $total_interest ) ); ?></p>
   				</div>
   				<div class="col-md-4">
   					<p><?php _e( 'Total Original Amount', 'wip' ) ?></p>
-  					<p><?php echo number_format($before_money); ?></p>
+  					<p><?php echo esc_html( number_format( $before_money ) ); ?></p>
   				</div>
   				<div class="col-md-4">
   					<p><?php _e( 'Total Interest Amount', 'wip' ) ?></p>
-  					<p><?php echo number_format($total_interest); ?></p>
+  					<p><?php echo esc_html( number_format( $total_interest ) ); ?></p>
   				</div>  				
   			</div>
 		<?php
