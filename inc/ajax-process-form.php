@@ -12,10 +12,7 @@ function wip_process_form() {
 
 	// Clean up the input values
 	foreach( $_POST as $key => $value ) {
-		if( ini_get( 'magic_quotes_gpc' ) )
-			$_POST[$key] = stripslashes( $_POST[$key] );
-		
-		$_POST[$key] = htmlspecialchars( strip_tags( $_POST[$key] ) );
+		$_POST[$key] = sanitize_key($value);
 	}
 
 	if ( isset( $_POST['money'] ) ) {

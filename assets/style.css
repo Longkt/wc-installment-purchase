@@ -1,3 +1,9 @@
+.button.wip-show {
+    background: rgba(0,0,0,0.1);
+    color: rgba(0,0,0,0.8);
+    cursor: pointer;
+}
+
 .calculate-detail {
 	margin-bottom: 10px;
     display: flex;
@@ -17,11 +23,11 @@
 .calculate-btn {
 	display: inline-block;
     position: relative;
-    color: #828282;
+    color: rgba(0, 0, 0, 0.8);
     font-size: 16px;
     text-transform: uppercase;
     border: 1px solid rgba(77,77,77,0.64);
-    background: none;
+    background: rgba(0, 0, 0, 0.1);
     font-weight: 600;
     padding: 9px 15px;
     float: right;
